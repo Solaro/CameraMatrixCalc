@@ -35,6 +35,25 @@ class Rectangle{
 		v4 = mat.mult(v4);
 	}
 
+	void rotateZ_translate(float theta, float x, float y, float z){
+		Matrix4x4 rot = new Matrix4x4();
+		rot.setRotateZ(theta);
+		println("[rotateZ]");
+		println(rot);
+		Matrix4x4 trans = new Matrix4x4();
+		trans.setTranslate(x, y, z);
+		println("[translate]");
+		println(trans);
+
+		Matrix4x4 mat = trans.mult(rot);
+		println("[rotateZ_translate]");
+		println(mat);
+		v1 = mat.mult(v1);
+		v2 = mat.mult(v2);
+		v3 = mat.mult(v3);
+		v4 = mat.mult(v4);
+	}
+
 	void drawOriginal(){
 		beginShape();
 		vertex(p1.array());

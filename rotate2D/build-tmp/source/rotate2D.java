@@ -18,10 +18,11 @@ Rectangle r;
 
 public void setup() {
 	size(640, 320);
-	r = new Rectangle(width/2, height/2, 50, 50);
-	r.translate(-width/2, -height/2, 0);
-	r.rotateZ(TWO_PI/8);
-	r.translate( width/2,  height/2, 0);
+	r = new Rectangle(0, 0, 50, 50);
+
+	// r.rotateZ(TWO_PI/8);
+	// r.translate(width/2, height/2, 0);
+	r.rotateZ_translate(TWO_PI/8, width/2, height/2, 0);
 }
 
 public void draw() {
@@ -104,6 +105,23 @@ class Matrix4x4{
 		result.w = p.w;
 		return result;
 	}
+
+	public Matrix4x4 mult(Matrix4x4 m){
+		Matrix4x4 result = new Matrix4x4();
+		for(int row = 0; row < 4; row++){
+			for(int col = 0; col < 4; col++){
+				result.a[row][col] = a[row][0]*m.a[0][col]
+									+a[row][1]*m.a[1][col]
+									+a[row][2]*m.a[2][col]
+									+a[row][3]*m.a[3][col];
+			}
+		}
+		return result;
+	}
+	public String toString() {
+        return String.format("%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f",
+        a[0][0],a[0][1],a[0][2],a[0][3],a[1][0],a[1][1],a[1][2],a[1][3],a[2][0],a[2][1],a[2][2],a[2][3],a[3][0],a[3][1],a[3][2],a[3][3]);
+    }
 };
 
 class Vector4f{
@@ -180,6 +198,25 @@ class Rectangle{
 	public void rotateZ(float theta){
 		Matrix4x4 mat = new Matrix4x4();
 		mat.setRotateZ(theta);
+		v1 = mat.mult(v1);
+		v2 = mat.mult(v2);
+		v3 = mat.mult(v3);
+		v4 = mat.mult(v4);
+	}
+
+	public void rotateZ_translate(float theta, float x, float y, float z){
+		Matrix4x4 rot = new Matrix4x4();
+		rot.setRotateZ(theta);
+		println("[rotateZ]");
+		println(rot);
+		Matrix4x4 trans = new Matrix4x4();
+		trans.setTranslate(x, y, z);
+		println("[translate]");
+		println(trans);
+
+		Matrix4x4 mat = trans.mult(rot);
+		println("[rotateZ_translate]");
+		println(mat);
 		v1 = mat.mult(v1);
 		v2 = mat.mult(v2);
 		v3 = mat.mult(v3);

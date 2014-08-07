@@ -47,6 +47,23 @@ class Matrix4x4{
 		result.w = p.w;
 		return result;
 	}
+
+	Matrix4x4 mult(Matrix4x4 m){
+		Matrix4x4 result = new Matrix4x4();
+		for(int row = 0; row < 4; row++){
+			for(int col = 0; col < 4; col++){
+				result.a[row][col] = a[row][0]*m.a[0][col]
+									+a[row][1]*m.a[1][col]
+									+a[row][2]*m.a[2][col]
+									+a[row][3]*m.a[3][col];
+			}
+		}
+		return result;
+	}
+	String toString() {
+        return String.format("%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f\n%.2f, %.2f, %.2f, %.2f",
+        a[0][0],a[0][1],a[0][2],a[0][3],a[1][0],a[1][1],a[1][2],a[1][3],a[2][0],a[2][1],a[2][2],a[2][3],a[3][0],a[3][1],a[3][2],a[3][3]);
+    }
 };
 
 class Vector4f{
