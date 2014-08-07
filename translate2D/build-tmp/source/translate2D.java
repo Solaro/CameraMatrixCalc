@@ -17,19 +17,41 @@ public class translate2D extends PApplet {
 Rectangle r;
 
 public void setup() {
-	size(512, 512);
-	r = new Rectangle(100, 100, 200, 200);
+	size(640, 320);
+	r = new Rectangle(width/2, height/2, 50, 50);
 	r.translate(50, 10, 0);
-	r.applyMatrix();
 }
 
 public void draw() {
 	background(255);
-	stroke(0);
 	noFill();
+	stroke(0);
 	r.drawOriginal();
 	stroke(255, 0, 0);
 	r.drawOperated();
+}
+
+public void keyPressed(){
+	switch(keyCode){
+		case UP:
+		r.translate(0, -10, 0);
+		break;
+
+		case RIGHT:
+		r.translate(10, 0, 0);
+		break;
+		
+		case DOWN:
+		r.translate(0, 10, 0);
+		break;
+		
+		case LEFT:
+		r.translate(-10, 0, 0);
+		break;
+
+		default:
+		break;
+	}
 }
 class Matrix4x4{
 	float[][] a = new float[4][4];
@@ -113,44 +135,31 @@ class Vector4f{
     }
 };
 class Rectangle{
+	Vector4f center;
 	Vector4f p1, p2, p3, p4; // Position of original(=local) apex
 	Vector4f v1, v2, v3, v4; // operated vertex for visualize
-	Matrix4x4 mat;
 	Rectangle(){
-		p1 = new Vector4f(   0,   0);	
-		p2 = new Vector4f( 100,   0);
-		p3 = new Vector4f( 100, 100);
-		p4 = new Vector4f(   0, 100);
-		mat = new Matrix4x4();
+		center 	= new Vector4f( 0.0f,  0.0f);
+		v1 = p1 = new Vector4f( 100,  100);	
+		v2 = p2 = new Vector4f(-100,  100);
+		v3 = p3 = new Vector4f(-100, -100);
+		v4 = p4 = new Vector4f( 100, -100);
 	}
 	Rectangle(float x, float y, float w, float h){
-		p1 = new Vector4f(   x,   y);
-		p2 = new Vector4f( x+w,   y);
-		p3 = new Vector4f( x+w, y+h);
-		p4 = new Vector4f(   x, y+h);
-		mat = new Matrix4x4();
+		center 	= new Vector4f(	  x,   y);
+		v1 = p1 = new Vector4f( x+w, y+h);
+		v2 = p2 = new Vector4f( x-w, y+h);
+		v3 = p3 = new Vector4f( x-w, y-h);
+		v4 = p4 = new Vector4f( x+w, y-h);
 	}
 
 	public void translate(float x, float y, float z){
+		Matrix4x4 mat = new Matrix4x4();
 		mat.translate(x, y, z);
-	}
-
-	public void applyMatrix(){
-		v1 = mat.mult(p1);
-		v2 = mat.mult(p2);
-		v3 = mat.mult(p3);
-		v4 = mat.mult(p4);
-
-		println("original >> ");
-		println("p1 = " + p1);
-		println("p2 = " + p2);
-		println("p3 = " + p3);
-		println("p4 = " + p4);
-		println("operated >> ");
-		println("v1 = " + v1);
-		println("v2 = " + v2);
-		println("v3 = " + v3);
-		println("v4 = " + v4);
+		v1 = mat.mult(v1);
+		v2 = mat.mult(v2);
+		v3 = mat.mult(v3);
+		v4 = mat.mult(v4);
 	}
 
 	public void drawOriginal(){
