@@ -5,20 +5,17 @@ float sx, sy; // scale of x axis and y axis
 float theta;  // rotation
 float tx, ty; // translation of x and y axis
 
-Rectangle r;
+Rectangle r1, r2, r3;
 VectorField vf;
 
 void setup() {
 	size(800, 500);
-	r = new Rectangle(0, 0, 40, 40);
+	r1 = new Rectangle(0, 0, 20, 20);
+	r2 = new Rectangle(160, -40, 80, 80);
+	r3 = new Rectangle(-200, 100, 40, 40);
 	vf = new VectorField(80, 50);
 
-	sx = 1.0;
-	sy = 1.0;
-	theta = 0;
-	tx = 0;
-	ty = 0;
-
+ 
 	setupGUI();
 }
 
@@ -32,23 +29,36 @@ void draw() {
 	line(-width, 0, width, 0);
   	line(0, -height, 0, height);
 
-  	r.scale(sx, sy);
-	r.rotate(theta);
-	r.scale(sx, sy);
-	r.translate(tx, ty);
-	//r.rotate_translate(theta, tx, ty);
+  	r1.scale(sx, sy);
+  	r2.scale(sx, sy);
+  	r3.scale(sx, sy);
+
+	r1.rotate(theta);
+	r2.rotate(theta);
+	r3.rotate(theta);
+
+	r1.translate(tx, ty);
+	r2.translate(tx, ty);
+	r3.translate(tx, ty);
+	//r1.rotate_translate(theta, tx, ty);
+	//r2.rotate_translate(theta, tx, ty);
+	//r3.rotate_translate(theta, tx, ty);
 	vf.scale(sx, sy);
 	vf.rotate(theta);
-	vf.scale(sx, sy);
+	
 	vf.translate(tx, ty);
 	//vf.rotate_translate(theta, tx, ty);
 	
 	noFill();
 	stroke(0);
 	strokeWeight(1.0);
-	r.drawOriginal();
+	r1.drawOriginal();
+	r2.drawOriginal();
+	r3.drawOriginal();
 	stroke(255, 0, 0);
-	r.drawOperated();
+	r1.drawOperated();
+	r2.drawOperated();
+	r3.drawOperated();
 
 	fill(0);
 	noStroke();
@@ -57,7 +67,9 @@ void draw() {
 	stroke(0, 0, 80);
 	vf.drawField();
 
-	r.resetTransform();
+	r1.resetTransform();
+	r2.resetTransform();
+	r3.resetTransform();
 	vf.resetTransform();
 
   	popMatrix(); // reset "moved to center(0, 0)" now left-top is(0, 0), and draw GUI
@@ -76,19 +88,27 @@ void setupGUI(){
 void keyPressed(){
 	switch(keyCode){
 		case UP:
-		r.translate(0, -10);
+		r1.translate(0, -10);
+		r2.translate(0, -10);
+		r3.translate(0, -10);
 		break;
 
 		case RIGHT:
-		r.translate(10, 0);
+		r1.translate(10, 0);
+		r2.translate(10, 0);
+		r3.translate(10, 0);
 		break;
 		
 		case DOWN:
-		r.translate(0, 10);
+		r1.translate(0, 10);
+		r2.translate(0, 10);
+		r3.translate(0, 10);
 		break;
 		
 		case LEFT:
-		r.translate(-10, 0);
+		r1.translate(-10, 0);
+		r2.translate(-10, 0);
+		r3.translate(-10, 0);
 		break;
 
 		default:
