@@ -33,6 +33,13 @@ class VectorField{
 			}
 		}
 	}
+	void resetTransform(){
+		for (int y = 0; y < yNum; y++) {
+			for (int x = 0; x < xNum; x++) {
+				transformed[x][y] = original[x][y];
+			}
+		}
+	}
 
 	void scale(float _x, float _y){
 		Matrix3x3 mat = new Matrix3x3();
@@ -88,7 +95,7 @@ class VectorField{
 		for (int y = 0; y < yNum; y++) {
 			for (int x = 0; x < xNum; x++) {
 				Vector3f pos = original[x][y];
-				ellipse(pos.x, pos.y, 3, 3);
+				ellipse(pos.x, pos.y, 2, 2);
 			}
 		}
 	}

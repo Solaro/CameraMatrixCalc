@@ -17,6 +17,13 @@ class Rectangle{
 		v4 = p4 = new Vector3f( x+w, y-h);
 	}
 
+	void resetTransform(){
+		v1 = p1;
+		v2 = p2;
+		v3 = p3;
+		v4 = p4;
+	}
+
 	void scale(float x, float y){
 		Matrix3x3 mat = new Matrix3x3();
 		mat.setScale(x, y);

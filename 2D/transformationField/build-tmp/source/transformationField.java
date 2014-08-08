@@ -3,6 +3,8 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import controlP5.*; 
+
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.File; 
@@ -14,29 +16,51 @@ import java.io.IOException;
 
 public class transformationField extends PApplet {
 
+
+
+ControlP5 gui;
+float sx, sy; // scale of x axis and y axis
+float theta;  // rotation
+float tx, ty; // translation of x and y axis
+
 Rectangle r;
 VectorField vf;
 
 public void setup() {
-	size(640, 320);
+	size(800, 500);
 	r = new Rectangle(0, 0, 40, 40);
-	vf = new VectorField(64, 32);
+	vf = new VectorField(80, 50);
 
-	r.scale(1.5f, 1.5f);
-	r.rotate(TWO_PI/32);
-	//r.translate(50, 30);
-	//r.rotate_translate(TWO_PI/8, 50, 30);
-	
-	vf.rotate(TWO_PI/32);
-	vf.scale(1.5f, 1.5f);
-	//vf.translate(50, 30);
-	//vf.rotate_translate(TWO_PI/8, 50, 30);
+	sx = 1.0f;
+	sy = 1.0f;
+	theta = 0;
+	tx = 0;
+	ty = 0;
+
+	setupGUI();
 }
 
 public void draw() {
 	background(255);
-	translate(width/2, height/2);
+	
+	pushMatrix(); // move center(0, 0) and draw all elements
+  	translate(width/2, height/2);
+  	
+  	stroke(0);
+	line(-width, 0, width, 0);
+  	line(0, -height, 0, height);
 
+  	r.scale(sx, sy);
+	r.rotate(theta);
+	r.scale(sx, sy);
+	r.translate(tx, ty);
+	//r.rotate_translate(theta, tx, ty);
+	vf.scale(sx, sy);
+	vf.rotate(theta);
+	vf.scale(sx, sy);
+	vf.translate(tx, ty);
+	//vf.rotate_translate(theta, tx, ty);
+	
 	noFill();
 	stroke(0);
 	strokeWeight(1.0f);
@@ -45,10 +69,26 @@ public void draw() {
 	r.drawOperated();
 
 	fill(0);
+	noStroke();
 	vf.drawOriginalPositions();
 	strokeWeight(0.5f);
-	stroke(0, 127, 0);
+	stroke(0, 0, 80);
 	vf.drawField();
+
+	r.resetTransform();
+	vf.resetTransform();
+
+  	popMatrix(); // reset "moved to center(0, 0)" now left-top is(0, 0), and draw GUI
+}
+
+public void setupGUI(){
+	gui = new ControlP5(this);
+	  
+	gui.addSlider("sx").setPosition(10,10).setRange(0.5f, 2).setSize(200, 12).setValue(1.0f).setColorCaptionLabel(100);
+	gui.addSlider("sy").setPosition(10,24).setRange(0.5f, 2).setSize(200, 12).setValue(1.0f).setColorCaptionLabel(100);
+	gui.addSlider("theta").setPosition(10,38).setRange(-TWO_PI/18, TWO_PI/18).setSize(200, 12).setValue(0).setColorCaptionLabel(100);
+	gui.addSlider("tx").setPosition(10,52).setRange(-20, 20).setSize(200, 12).setValue(0).setColorCaptionLabel(100);
+	gui.addSlider("ty").setPosition(10,66).setRange(-20, 20).setSize(200, 12).setValue(0).setColorCaptionLabel(100);
 }
 
 public void keyPressed(){
@@ -150,6 +190,13 @@ class Rectangle{
 		v2 = p2 = new Vector3f( x-w, y+h);
 		v3 = p3 = new Vector3f( x-w, y-h);
 		v4 = p4 = new Vector3f( x+w, y-h);
+	}
+
+	public void resetTransform(){
+		v1 = p1;
+		v2 = p2;
+		v3 = p3;
+		v4 = p4;
 	}
 
 	public void scale(float x, float y){
@@ -286,6 +333,13 @@ class VectorField{
 			}
 		}
 	}
+	public void resetTransform(){
+		for (int y = 0; y < yNum; y++) {
+			for (int x = 0; x < xNum; x++) {
+				transformed[x][y] = original[x][y];
+			}
+		}
+	}
 
 	public void scale(float _x, float _y){
 		Matrix3x3 mat = new Matrix3x3();
@@ -341,7 +395,7 @@ class VectorField{
 		for (int y = 0; y < yNum; y++) {
 			for (int x = 0; x < xNum; x++) {
 				Vector3f pos = original[x][y];
-				ellipse(pos.x, pos.y, 3, 3);
+				ellipse(pos.x, pos.y, 2, 2);
 			}
 		}
 	}
