@@ -3,6 +3,8 @@ import controlP5.*;
 
 PeasyCam cam;
 
+Camera cameraa;
+
 ControlP5 gui;
 float sx, sy, sz; // scale of x,y,z
 float rx, ry, rz; // rotation of x, y, z
@@ -21,6 +23,12 @@ void setup() {
 	c1 = new Cube(50);
 	vf = new VectorField(5, 5, 5, 25);
 
+	cameraa = new Camera();
+	cameraa.setPosition(new Vector4f(300.0, 200.0, 100.0));
+	cameraa.setTarget(new Vector4f(0.0, 0.0, 0.0));
+	cameraa.viewTranslation();
+
+
 	setupGUI();
 }
 
@@ -30,38 +38,47 @@ void draw() {
 	transform();
 
 	// DRAW AXIS
-	stroke(255, 0, 0);
-	line(-100, 0, 0, 100, 0, 0);
-	line(100, 0, 0, 90, 10, 10);
-	stroke(0, 255, 0);
-	line(0, -100, 0, 0, 100, 0);
-	line(0, 100, 0, 10, 90, 10);
-	stroke(0, 0, 255);
-	line(0, 0, -100, 0, 0, 100);
-	line(0, 0, 100, 10, 10, 90);
+	// stroke(255, 0, 0);
+	// line(-100, 0, 0, 100, 0, 0);
+	// line(100, 0, 0, 90, 10, 10);
+	// stroke(0, 255, 0);
+	// line(0, -100, 0, 0, 100, 0);
+	// line(0, 100, 0, 10, 90, 10);
+	// stroke(0, 0, 255);
+	// line(0, 0, -100, 0, 0, 100);
+	// line(0, 0, 100, 10, 10, 90);
 
 
 	// DRAW CUBE
 	noFill();
 	strokeWeight(0.5);
+	stroke(127, 0, 0);
+	c1.drawLocal();
 	stroke(255, 0, 0);
-	c1.drawOriginal();
-	stroke(0);
 	strokeWeight(1.0);
-	c1.drawTransformed();
-
-	// DRAW VECTORFIELD
-	stroke(0, 0, 80);
+	c1.drawWorld();
+	stroke(0);
 	strokeWeight(2.0);
-	vf.drawOriginalPositions();
-	strokeWeight(1.7);
-	vf.drawField();
+	c1.drawCameraView();
+
+	cameraa.draw();
+	cameraa.drawTranslated();
 
 	hint(DISABLE_DEPTH_TEST);
   	cam.beginHUD();
   	gui.draw();
   	cam.endHUD();
   	hint(ENABLE_DEPTH_TEST);
+}
+
+void mousePressed(){
+	if(gui.isMouseOver()){
+  		cam.setMouseControlled(false);
+  	}
+}
+
+void mouseReleased(){
+	cam.setMouseControlled(true);
 }
 
 void transform(){
@@ -78,6 +95,8 @@ void transform(){
 	vf.rotateY(ry);
 	vf.rotateZ(rz);
 	vf.translate(tx, ty, tz);
+
+	c1.viewTranslation(cameraa.viewMatrix());
 }
 
 void setupGUI(){

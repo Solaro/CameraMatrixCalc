@@ -42,7 +42,6 @@ class Matrix4x4{
 		a[1][0] = -sin(theta);	a[1][1] =  cos(theta);	
 	}
 
-
 	// --- MATRIX CALCULATION ---
 	// result.x 	a[0][0] a[0][1] a[0][2] a[0][3] 	input.x
 	// result.y 	a[1][0] a[1][1] a[1][2] a[1][3] 	input.y
